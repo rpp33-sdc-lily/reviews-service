@@ -33,20 +33,26 @@ app.post('/reviews', (req, res) => {
 });
 
 app.put('/reviews/:review_id/helpful', (req, res) => {
-
-  res.status(200).send({});
+  var id = req.params.review_id;
+  models.markReviewHelpful(id)
+  .then(response => {
+    res.status(200).send({ message: 'successfully marking review as helpful'});
+  })
+  .catch(error => {
+    console.log('error in server side in marking review as helpful', error)
+  })
 });
 
 app.put('/reviews/:review_id/report', (req, res) => {
   console.log('review_id', req.params.review_id);
   var id = req.params.review_id;
   models.reportReview(id)
-    .then(response => {
-      res.status(200).send({ message: 'successfully reporting review'});
-    })
-    .catch(error => {
-      console.log('error in server side in reporting review', error)
-    })
+  .then(response => {
+    res.status(200).send({ message: 'successfully reporting review'});
+  })
+  .catch(error => {
+    console.log('error in server side in reporting review', error)
+  })
 });
 
 

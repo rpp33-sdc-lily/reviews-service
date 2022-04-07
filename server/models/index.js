@@ -5,18 +5,30 @@ module.exports = {
   getReviews: () => {
   },
 
-  reportReview: (id) => {
-    var query = `UPDATE reviews SET reported=true WHERE review_id = ${id};`;
+  markReviewHelpful: (id) => {
+    var query = `UPDATE reviews SET helpfulness = helpfulness + 1 WHERE review_id = ${id};`;
 
     return db.queryAsync(query)
-      .then(response => {
-        console.log('RESPONSE', response);
-        return;
-      })
-      .catch(error => {
-        console.log('error in reporting review', error)
-      })
+    .then(response => {
+      console.log('RESPONSE', response);
+      return;
+    })
+    .catch(error => {
+      console.log('error in marking review as helpful', error)
+    })
+  },
 
+  reportReview: (id) => {
+    var query = `UPDATE reviews SET reported = true WHERE review_id = ${id};`;
+
+    return db.queryAsync(query)
+    .then(response => {
+      console.log('RESPONSE', response);
+      return;
+    })
+    .catch(error => {
+      console.log('error in reporting review', error)
+    })
   }
 }
 
