@@ -1,9 +1,19 @@
 const express = require('express');
-var bodyParser = require('body-parser');
-
 let app = express();
+
+var bodyParser = require('body-parser');
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false}));
+app.use(bodyParser.urlencoded({ extended: true}));
+
+const db = require('../database/index.js').db;
+const models = require('./models/index.js');
+models.getReviews();
+
+//serve static file here later?
+
+app.get('/', (req, res) => {
+  res.status(200).send('anything');
+})
 
 app.get('/test', (req, res) => {
   res.send({message: 'passing the test!'})
