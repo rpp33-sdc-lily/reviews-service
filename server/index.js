@@ -28,8 +28,14 @@ app.get('/reviews/meta', (req, res) => {
 });
 
 app.post('/reviews', (req, res) => {
-
-  res.status(200).send({});
+  console.log('body parameters when posting a review', req.body);
+  models.postReview(req.body)
+  .then(response => {
+    res.status(200).send({ message: 'successfully posting a review'});
+  })
+  .catch(error => {
+    console.log('error in server side in posting a review', error)
+  })
 });
 
 app.put('/reviews/:review_id/helpful', (req, res) => {
