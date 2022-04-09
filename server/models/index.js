@@ -2,12 +2,22 @@ var db = require('../../database/index.js').db;
 
 module.exports = {
 
-  getReviews: () => {
+  getReviews: (productId) => {
+    var query = `SELECT review_id, rating, summary, recommend, response, body, date, reviewer_name, helpfulness FROM reviews WHERE product_id = ${productId};`;
+
+    return db.queryAsync(query)
+    .then(response => {
+      console.log('RESPONSE', response)
+      return response;
+    })
+    .catch(error => {
+      console.log('error in obtaining reviews', error)
+    })
   },
 
   postReview: (reviewData) => {
     console.log('this is the reviewData in models', reviewData);
-    console.log('type of email', typeof reviewData.email);
+    // console.log('type of email', typeof reviewData.email);
     var query = `INSERT INTO reviews(review_id, product_id, rating, date, summary, body, recommend, reported, reviewer_name, email, helpfulness)
                 VALUES(null, ${parseInt(reviewData.product_id)}, ${parseInt(reviewData.rating)}, NOW(), ${reviewData.summary}, ${reviewData.body}, ${reviewData.recommend}, false, ${reviewData.name}, ${reviewData.email}, 0);`;
 

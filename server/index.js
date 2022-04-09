@@ -17,9 +17,16 @@ app.get('/test', (req, res) => {
   res.send({message: 'passing the test!'})
 });
 
-app.get('/reviews',(req, res) => {
-
-  res.status(200).send({});
+app.get('/reviews/',(req, res) => {
+  var id = parseInt(req.query.product_id);
+  console.log('should be product id', id)
+  models.getReviews(id)
+  .then(response => {
+    res.status(200).send({ message: 'successfully getting reviews'});
+  })
+  .catch(error => {
+    console.log('error in getting reviews', error);
+  })
 });
 
 app.get('/reviews/meta', (req, res) => {
