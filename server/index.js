@@ -22,7 +22,13 @@ app.get('/reviews/',(req, res) => {
   console.log('should be product id', id)
   models.getReviews(id)
   .then(response => {
-    res.status(200).send({ message: 'successfully getting reviews'});
+    var responseBackToClient = {
+      "product": id.toString(),
+      "page": parseInt(req.query.page),
+      "count": parseInt(req.query.count),
+      "results": response
+    };
+    res.status(200).send(responseBackToClient);
   })
   .catch(error => {
     console.log('error in getting reviews', error);
