@@ -7,6 +7,7 @@ app.use(bodyParser.urlencoded({ extended: true}));
 
 const db = require('../database/index.js').db;
 const models = require('./models/index.js');
+const helperFunctions = require('./helperFunctions.js');
 
 app.get('/', (req, res) => {
   res.status(200).send('anything');
@@ -36,8 +37,17 @@ app.get('/reviews/',(req, res) => {
 });
 
 app.get('/reviews/meta', (req, res) => {
+  var id = parseInt(req.query.product_id);
 
-  res.status(200).send({});
+  console.log('should be product id', id);
+  models.getMetaData(id)
+  .then(response => {
+    console.log('response in server', response)
+    res.status(200).send(response);
+  })
+  .catch(error => {
+    console.log('error in getting meta data', error);
+  })
 });
 
 app.post('/reviews', (req, res) => {
