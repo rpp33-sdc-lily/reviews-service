@@ -44,23 +44,33 @@ module.exports = {
   getMetaData: (productId) => {
     // var query = `SELECT rating, recommend FROM reviews WHERE product_id = ${productId};`;
     // var query = `SELECT rating,COUNT(*) from reviews where product_id = ${productId} group by rating;`;
-    var query = `SELECT rating,COUNT(*) from reviews where product_id = ${productId} group by rating;`;
+    // var query = `SELECT rating,COUNT(*) from reviews where product_id = ${productId} group by rating;`;
+    var query = `select rating, count(*) from reviews where product_id = ${productId} group by rating;`
     var result = {};
     return db.queryAsync(query)
     .then(response => {
-      console.log('response in getting meta data', response);
+      console.log('response in getting rating meta data', response);
       result.ratings = response;
       var query = `SELECT recommend,COUNT(*) from reviews where product_id = ${productId} group by recommend;`
       return db.queryAsync(query)
     })
     .then(response => {
-      console.log('response in getting meta data', response);
+      console.log('response in getting recommend meta data', response);
       result.recommended = response;
-      var query = `select * from characteristic_reviews inner join characteristics on characteristic_reviews.characteristic_id = characteristics.characteristic_id where characteristics.product_id=${productId};`
+      // var query = `select * from characteristic_reviews inner join characteristics on characteristic_reviews.characteristic_id = characteristics.characteristic_id where characteristics.product_id=${productId};`
+      // var query = `select cr.value, cr.characteristic_id, c.name from characteristic_reviews cr inner join characteristics c on characteristic_reviews.characteristic_id = characteristics.characteristic_id where c.product_id=2;`
+
+      // select cr.value, cr.characteristic_id, c.name from characteristic_reviews cr inner join characteristics c on cr.characteristic_id = c.characteristic_id where c.product_id=2;
+      // select cr.value, cr.characteristic_id as id, c.name from characteristic_reviews cr inner join characteristics c on cr.characteristic_id = c.characteristic_id where c.product_id=2;
+      // var query = `SELECT value FROM (SELECT c.name, AVG(cr.value) AS value FROM characteristic_reviews cr INNER JOIN characteristics c ON cr.characteristic_id = c.characteristic_id WHERE c.product_id=2 GROUP BY c.name) T1;`
+
+      var query = `SELECT id, name, value FROM (SELECT cr.characteristic_id as id, c.name as name, AVG(cr.value) AS value FROM characteristic_reviews cr INNER JOIN characteristics c ON cr.characteristic_id = c.characteristic_id WHERE c.product_id=2 GROUP BY c.name, cr.characteristic_id) T3;`
+
       return db.queryAsync(query)
     })
     .then(response => {
       result.characteristics = response;
+      console.log('characteristics response in models', response);
       return result;
     })
     .catch(error => {

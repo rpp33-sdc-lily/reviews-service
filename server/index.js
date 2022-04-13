@@ -42,7 +42,10 @@ app.get('/reviews/meta', (req, res) => {
   console.log('should be product id', id);
   models.getMetaData(id)
   .then(response => {
-    console.log('response in server', response)
+    console.log('response in server', response);
+    return helperFunctions.sortMetaData(response, id);
+  })
+  .then(response => {
     res.status(200).send(response);
   })
   .catch(error => {
