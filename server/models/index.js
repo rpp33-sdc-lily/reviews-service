@@ -7,6 +7,7 @@ module.exports = {
     // var query = `SELECT r.review_id, r.rating, r.summary, r.recommend, r.response, r.body, r.date, r.reviewer_name, r.helpfulness,
     //             JSON_ARRAYAGG(JSON_OBJECT('id', p.photo_id, 'url', p.url)) AS photos FROM reviews r LEFT JOIN photos p ON r.review_id = p.review_id
     //             WHERE product_id = ${productId} GROUP BY r.review_id;`;
+    // below is the best one so far
     // var query = `SELECT r.review_id, r.rating, r.summary, r.recommend, NULLIF(r.response, 'null') as response, r.body, r.date, r.reviewer_name, r.helpfulness,
     //         JSON_ARRAYAGG(JSON_OBJECT('id', p.photo_id, 'url', p.url)) AS photos FROM reviews r LEFT JOIN photos p ON r.review_id = p.review_id
     //         WHERE product_id = ${productId} AND r.reported != 1 GROUP BY r.review_id;`;
@@ -18,9 +19,13 @@ module.exports = {
     // var query = `select coalesce(photosTwo.photoID, '[]') as photos FROM(SELECT r.review_id as reviewID, p.photo_id as photoID, p.url, p.review_id AS photos FROM reviews r LEFT JOIN photos p ON r.review_id = p.review_id WHERE product_id = ${productId}) as photosTwo;`;
 
     // var query = `select IFNULL(photosTwo.photoID, '[]') as photos FROM(SELECT r.review_id as reviewID, p.photo_id as photoID, p.url, p.review_id AS photos FROM reviews r LEFT JOIN photos p ON r.review_id = p.review_id WHERE product_id = ${productId}) as photosTwo;`;
+    // var query = `SELECT r.review_id, r.rating, r.summary, r.recommend, NULLIF(r.response, 'null') as response, r.body, r.date, r.reviewer_name, r.helpfulness,
+    //         @var1, set photos if p.url = null then set photos = '[]'; else set photos = JSON_ARRAYAGG(JSON_OBJECT('id', p.photo_id, 'url', p.url)); else if; as photos FROM reviews r left JOIN photos p ON r.review_id = p.review_id
+    //         WHERE product_id = ${productId} AND r.reported != 1 GROUP BY r.review_id;`;
+
     var query = `SELECT r.review_id, r.rating, r.summary, r.recommend, NULLIF(r.response, 'null') as response, r.body, r.date, r.reviewer_name, r.helpfulness,
-            JSON_ARRAYAGG(JSON_OBJECT('id', p.photo_id, 'url', p.url)) as photos FROM reviews r LEFT JOIN photos p ON r.review_id = p.review_id
-            WHERE product_id = ${productId} AND r.reported != 1 GROUP BY r.review_id;`;
+    if(count(p.photo_id) = 0, json_array(), JSON_ARRAYAGG(JSON_OBJECT('id', p.photo_id, 'url', p.url))) AS photos FROM reviews r LEFT JOIN photos p ON r.review_id = p.review_id
+    WHERE product_id = ${productId} AND r.reported != 1 GROUP BY r.review_id;`;
 
     return db.queryAsync(query)
     .then(response => {
