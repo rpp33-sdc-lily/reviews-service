@@ -64,7 +64,7 @@ module.exports = {
       // select cr.value, cr.characteristic_id as id, c.name from characteristic_reviews cr inner join characteristics c on cr.characteristic_id = c.characteristic_id where c.product_id=2;
       // var query = `SELECT value FROM (SELECT c.name, AVG(cr.value) AS value FROM characteristic_reviews cr INNER JOIN characteristics c ON cr.characteristic_id = c.characteristic_id WHERE c.product_id=2 GROUP BY c.name) T1;`
 
-      var query = `SELECT id, name, value FROM (SELECT cr.characteristic_id as id, c.name as name, AVG(cr.value) AS value FROM characteristic_reviews cr INNER JOIN characteristics c ON cr.characteristic_id = c.characteristic_id WHERE c.product_id=2 GROUP BY c.name, cr.characteristic_id) T3;`
+      var query = `SELECT id, name, value FROM (SELECT cr.characteristic_id as id, c.name as name, AVG(cr.value) AS value FROM characteristic_reviews cr INNER JOIN characteristics c ON cr.characteristic_id = c.characteristic_id WHERE c.product_id=${productId} GROUP BY c.name, cr.characteristic_id) T3;`
 
       return db.queryAsync(query)
     })
