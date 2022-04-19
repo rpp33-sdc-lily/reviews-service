@@ -20,6 +20,8 @@ CREATE TABLE IF NOT EXISTS reviews (
   PRIMARY KEY(review_id)
 );
 
+CREATE INDEX reviews ON reviews(product_id, review_id, reported);
+
 CREATE TABLE IF NOT EXISTS photos (
   photo_id int NOT NULL AUTO_INCREMENT,
   review_id int,
@@ -30,12 +32,16 @@ CREATE TABLE IF NOT EXISTS photos (
     ON DELETE CASCADE
 );
 
+CREATE INDEX photos ON photos(photo_id, review_id);
+
 CREATE TABLE IF NOT EXISTS characteristics (
   characteristic_id int NOT NULL AUTO_INCREMENT,
   product_id int NOT NULL,
   name text,
   PRIMARY KEY(characteristic_id)
 );
+
+CREATE INDEX characteristics ON characteristics(product_id);
 
 CREATE TABLE IF NOT EXISTS characteristic_reviews (
   id int NOT NULL AUTO_INCREMENT,
@@ -50,6 +56,8 @@ CREATE TABLE IF NOT EXISTS characteristic_reviews (
     REFERENCES characteristics(characteristic_id)
     ON DELETE CASCADE
 );
+
+CREATE INDEX characteristicVals ON characteristic_reviews(characteristic_id);
 
 -- LOAD DATA LOCAL INFILE './data/reviews.csv'
 -- INTO TABLE reviews
