@@ -2,7 +2,7 @@ module.exports = {
 
   sortMetaData: (data, id) => {
     // sort data and organize it to how the client expects it
-    console.log('data in helper', data)
+    // console.log('data in helper', data)
     var result = {};
     result.product_id = id.toString();
     result.ratings = {};
