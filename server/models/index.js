@@ -1,4 +1,7 @@
-var db = require('../../database/index.js').db;
+var dbObject = require('../../database/index.js').db;
+const mysql = require('mysql2');
+
+var db = dbObject.db;
 
 module.exports = {
 

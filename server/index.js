@@ -5,7 +5,7 @@ var bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true}));
 
-const db = require('../database/index.js').db;
+const dbObject = require('../database/index.js').db;
 const models = require('./models/index.js');
 const helperFunctions = require('./helperFunctions.js');
 
@@ -14,8 +14,7 @@ app.get('/', (req, res) => {
 })
 
 app.get('/test', (req, res) => {
-  console.log('passing the test?!?!')
-  res.send({message: 'passing the test!'})
+  res.status(200).send({message: 'passing the test!'})
 });
 
 app.get('/reviews/',(req, res) => {
@@ -86,17 +85,17 @@ app.put('/reviews/:review_id/report', (req, res) => {
   })
   .catch(error => {
     console.log('error in server side in reporting review', error)
+    // add res.status 500 to send back to client
   })
 });
 
-
-let port = 5000;
-
-app.listen(port, function() {
-  console.log(`listening on port ${port}`);
-});
+// write app.close function that closes db connection
+app.close = () => {
+  dbObject.connectionTwo.end();
+}
 
 module.exports = app;
+
 
 
 
