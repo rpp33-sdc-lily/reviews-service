@@ -1,12 +1,13 @@
 {
   "name": "reviews-service",
+  "jest": {"testEnvironment": "jsdom"},
   "description": "",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
+    "test": "jest --detectOpenHandles",
     "test:watch": "jest --watch",
-    "server-dev": " npx nodemon server/index.js"
+    "server-dev": " npx nodemon server/start.js"
   },
   "repository": {
     "type": "git",

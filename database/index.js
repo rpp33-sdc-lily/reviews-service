@@ -12,6 +12,9 @@ connection.connect(error => {
   }
 });
 
+const connectionTwo = connection;
+
 const db = Promise.promisifyAll(connection);
 
-module.exports.db = db;
+module.exports.db = {db, connectionTwo};
+
