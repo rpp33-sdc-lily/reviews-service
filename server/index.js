@@ -5,7 +5,7 @@ var bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true}));
 
-const db = require('../database/index.js').db;
+const dbObject = require('../database/index.js').db;
 const models = require('./models/index.js');
 const helperFunctions = require('./helperFunctions.js');
 
@@ -14,13 +14,12 @@ app.get('/', (req, res) => {
 })
 
 app.get('/test', (req, res) => {
-  console.log('passing the test?!?!')
-  res.send({message: 'passing the test!'})
+  res.status(200).send({message: 'passing the test!'})
 });
 
 app.get('/reviews/',(req, res) => {
   var id = parseInt(req.query.product_id);
-  console.log('should be product id', id)
+  // console.log('should be product id', id)
   models.getReviews(id)
   .then(response => {
     var responseBackToClient = {
@@ -29,29 +28,31 @@ app.get('/reviews/',(req, res) => {
       "count": parseInt(req.query.count),
       "results": response
     };
-    console.log('response back to client', responseBackToClient);
-    console.log('response before sending to client', response);
+    // console.log('response back to client', responseBackToClient);
+    // console.log('response before sending to client', response);
     res.status(200).send(responseBackToClient);
   })
   .catch(error => {
-    console.log('error in getting reviews', error);
+    // console.log('error in getting reviews', error);
+    res.status(500).send({ message: 'error in getting reviews'});
   })
 });
 
 app.get('/reviews/meta', (req, res) => {
   var id = parseInt(req.query.product_id);
 
-  console.log('should be product id', id);
+  // console.log('should be product id', id);
   models.getMetaData(id)
   .then(response => {
-    console.log('response in server', response);
+    // console.log('response in server', response);
     return helperFunctions.sortMetaData(response, id);
   })
   .then(response => {
     res.status(200).send(response);
   })
   .catch(error => {
-    console.log('error in getting meta data', error);
+    // console.log('error in getting meta data', error);
+    res.status(500).send({ message: 'error in getting meta data'});
   })
 });
 
@@ -62,7 +63,8 @@ app.post('/reviews', (req, res) => {
     res.status(201).send({ message: 'successfully posting a review'});
   })
   .catch(error => {
-    console.log('error in server side in posting a review', error)
+    // console.log('error in server side in posting a review', error)
+    res.status(403).send();
   })
 });
 
@@ -70,33 +72,34 @@ app.put('/reviews/:review_id/helpful', (req, res) => {
   var id = req.params.review_id;
   models.markReviewHelpful(id)
   .then(response => {
-    res.status(204).send({ message: 'successfully marking review as helpful'});
+    res.status(204).send();
   })
   .catch(error => {
-    console.log('error in server side in marking review as helpful', error)
+    // console.log('error in server side in marking review as helpful', error)
+    res.status(500).send();
   })
 });
 
 app.put('/reviews/:review_id/report', (req, res) => {
-  console.log('review_id', req.params.review_id);
+  // console.log('review_id', req.params.review_id);
   var id = req.params.review_id;
   models.reportReview(id)
   .then(response => {
-    res.status(204).send({ message: 'successfully reporting review'});
+    res.status(204).send();
   })
   .catch(error => {
-    console.log('error in server side in reporting review', error)
+    // console.log('error in server side in reporting review', error)
+    res.status(500).send();
   })
 });
 
-
-let port = 5000;
-
-app.listen(port, function() {
-  console.log(`listening on port ${port}`);
-});
+// write app.close function that closes db connection
+app.close = () => {
+  dbObject.connectionTwo.end();
+}
 
 module.exports = app;
+
 
 
 

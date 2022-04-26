@@ -6,12 +6,15 @@ const connection = mysql.createConnection(mysqlConfig);
 
 connection.connect(error => {
   if (error) {
-    return console.log('Error in connecting to database');
+    return console.log('Error in connecting to database', error);
   } else {
     console.log('Connected to mySQL reviews_service Database')
   }
 });
 
+const connectionTwo = connection;
+
 const db = Promise.promisifyAll(connection);
 
-module.exports.db = db;
+module.exports.db = {db, connectionTwo};
+

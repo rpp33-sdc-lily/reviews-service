@@ -1,4 +1,7 @@
-var db = require('../../database/index.js').db;
+var dbObject = require('../../database/index.js').db;
+const mysql = require('mysql2');
+
+var db = dbObject.db;
 
 module.exports = {
 
@@ -9,12 +12,12 @@ module.exports = {
 
     return db.queryAsync(query)
     .then(response => {
-      console.log('RESPONSE in get', response);
+      // console.log('RESPONSE in get', response);
       return response;
     })
-    .catch(error => {
-      console.log('error in obtaining reviews', error);
-    })
+    // .catch(error => {
+    //   console.log('error in obtaining reviews', error);
+    // })
   },
 
   getMetaData: (productId) => {
@@ -22,13 +25,13 @@ module.exports = {
     var result = {};
     return db.queryAsync(query)
     .then(response => {
-      console.log('response in getting rating meta data', response);
+      // console.log('response in getting rating meta data', response);
       result.ratings = response;
       var query = `SELECT recommend,COUNT(*) from reviews where product_id = ${productId} group by recommend;`
       return db.queryAsync(query)
     })
     .then(response => {
-      console.log('response in getting recommend meta data', response);
+      // console.log('response in getting recommend meta data', response);
       result.recommended = response;
       var query = `SELECT id, name, value FROM (SELECT cr.characteristic_id as id, c.name as name, AVG(cr.value) AS value FROM characteristic_reviews cr INNER JOIN characteristics c ON cr.characteristic_id = c.characteristic_id WHERE c.product_id=${productId} GROUP BY c.name, cr.characteristic_id) T3;`
 
@@ -36,16 +39,16 @@ module.exports = {
     })
     .then(response => {
       result.characteristics = response;
-      console.log('characteristics response in models', response);
+      // console.log('characteristics response in models', response);
       return result;
     })
-    .catch(error => {
-      console.log('error in obtaining meta data', error);
-    })
+    // .catch(error => {
+    //   console.log('error in obtaining meta data', error);
+    // })
   },
 
   postReview: (reviewData) => {
-    console.log('this is the reviewData in models', reviewData);
+    // console.log('this is the reviewData in models', reviewData);
     var reviewID;
     var query = `INSERT INTO reviews(review_id, product_id, rating, date, summary, body, recommend, reported, reviewer_name, email, helpfulness) VALUES(null, ${parseInt(reviewData.product_id)}, ${parseInt(reviewData.rating)}, NOW(), ${reviewData.summary}, ${reviewData.body}, ${reviewData.recommend}, false, ${reviewData.name}, ${reviewData.email}, 0);`
     return db.queryAsync(query)
@@ -54,7 +57,7 @@ module.exports = {
       return db.queryAsync(getIDQuery)
       .then(response => {
         reviewID = response[0].review_id;
-        console.log('characteristics data', reviewData.characteristics)
+        // console.log('characteristics data', reviewData.characteristics)
         var charObject = JSON.parse(reviewData.characteristics);
 
         var all = [];
@@ -66,7 +69,7 @@ module.exports = {
         }
 
         var promises = all.map(charReview => {
-          console.log('character review', charReview);
+          // console.log('character review', charReview);
           var objKey;
           var objValue;
           for (var key in charReview){
@@ -87,7 +90,7 @@ module.exports = {
       })
       .then(response => {
         var photosArray = JSON.parse(reviewData.photos);
-        console.log('photos array', photosArray)
+        // console.log('photos array', photosArray)
         if(photosArray.length > 0) {
           photosArray.forEach(photo => {
             var addPhotoQuery = `INSERT INTO photos(photo_id, review_id, url)
@@ -121,25 +124,20 @@ module.exports = {
     var query = `UPDATE reviews SET helpfulness = helpfulness + 1 WHERE review_id = ${id};`;
     return db.queryAsync(query)
     .then(response => {
-      console.log('RESPONSE', response);
+      // console.log('RESPONSE', response);
       return;
     })
-    .catch(error => {
-      console.log('error in marking review as helpful', error)
-    })
+    // .catch(error => {
+    //   console.log('error in marking review as helpful', error)
+    // })
   },
 
   reportReview: (id) => {
     var query = `UPDATE reviews SET reported = true WHERE review_id = ${id};`;
     return db.queryAsync(query)
     .then(response => {
-      console.log('RESPONSE', response);
+      // console.log('RESPONSE', response);
       return;
-    })
-    .catch(error => {
-      console.log('error in reporting review', error)
     })
   }
 }
-
-
