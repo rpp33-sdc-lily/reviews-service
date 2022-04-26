@@ -59,31 +59,6 @@ CREATE TABLE IF NOT EXISTS characteristic_reviews (
 
 CREATE INDEX characteristicVals ON characteristic_reviews(characteristic_id);
 
--- LOAD DATA LOCAL INFILE './data/reviews.csv'
--- INTO TABLE reviews
--- FIELDS TERMINATED BY ','
--- ENCLOSED BY '"'
--- LINES TERMINATED BY '\n'
--- IGNORE 1 ROWS;
--- SET date =
-
--- DECLARE @DateValue AS BIGINT = 1525939481255;
-
--- SELECT CONVERT(VARCHAR(10), DATEADD(SECOND, @DateValue/1000 ,'1970/1/1'), 105) + ' ' + CONVERT(VARCHAR(15), CAST(DATEADD(SECOND, @DateValue/1000 ,'1970/1/1') AS TIME), 100);
-
--- SELECT FORMAT(DATEADD(SECOND, 1525939481255/1000 ,'1970/1/1'), 'dd-MM-yyyy HH:MM:ss');
-
--- DATEADD(SECOND, 1596080481467/1000 ,'1970/1/1')
-
--- select from_unixtime(1596080481467/1000,"%Y-%m-%d %h %i %s");
-
-
--- LOAD DATA LOCAL INFILE './data/reviews.csv'
--- INTO TABLE reviews
--- FIELDS TERMINATED BY ','
--- ENCLOSED BY '"'
--- LINES TERMINATED BY '\n'
--- IGNORE 1 ROWS;
 
 
 LOAD DATA LOCAL INFILE './data/reviews.csv'

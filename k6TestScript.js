@@ -4,7 +4,7 @@ import { check, sleep } from "k6";
 const API_URL = 'http://localhost:5000/';
 
 export let options = {
-  vus: 1000,
+  vus: 75000,
   duration: '30s'
 };
 
@@ -25,16 +25,16 @@ export default function () {
   var id= generateRandom(900010, 1000011);
   // console.log('id', id);
 
-  // let getProductReviews = http.get(`http://localhost:5000/reviews/?page=1&count=100000&sort='newest'&product_id=${id}`);
-  // check(
-  //   getProductReviews,
-  //   { "Get product reviews status code is 200": (r) => r.status == 200 }
-  // );
-  let getMetaData = http.get(`http://localhost:5000/reviews/meta?product_id=${id}`);
+  let getProductReviews = http.get(`http://localhost:5000/reviews/?page=1&count=100000&sort='newest'&product_id=${id}`);
   check(
-    getMetaData,
-    { "Get product meta data status code is 200": (r) => r.status == 200 }
+    getProductReviews,
+    { "Get product reviews status code is 200": (r) => r.status == 200 }
   );
+  // let getMetaData = http.get(`http://localhost:5000/reviews/meta?product_id=${id}`);
+  // check(
+  //   getMetaData,
+  //   { "Get product meta data status code is 200": (r) => r.status == 200 }
+  // );
 
 }
 
