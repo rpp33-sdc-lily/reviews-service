@@ -50,7 +50,8 @@ module.exports = {
   postReview: (reviewData) => {
     // console.log('this is the reviewData in models', reviewData);
     var reviewID;
-    var query = `INSERT INTO reviews(review_id, product_id, rating, date, summary, body, recommend, reported, reviewer_name, email, helpfulness) VALUES(null, ${parseInt(reviewData.product_id)}, ${parseInt(reviewData.rating)}, NOW(), ${reviewData.summary}, ${reviewData.body}, ${reviewData.recommend}, false, ${reviewData.name}, ${reviewData.email}, 0);`
+    var query = `INSERT INTO reviews(review_id, product_id, rating, date, summary, body, recommend, reported, reviewer_name, email, helpfulness) VALUES(null, ${reviewData.product_id}, ${reviewData.rating}, NOW(), '${reviewData.summary}', '${reviewData.body}', ${reviewData.recommend}, false, '${reviewData.name}', '${reviewData.email}', 0);`;
+    console.log(' this is the query', query);
     return db.queryAsync(query)
     .then(response => {
       var getIDQuery = `SELECT review_id FROM reviews ORDER BY review_id DESC LIMIT 1;`;
@@ -58,7 +59,7 @@ module.exports = {
       .then(response => {
         reviewID = response[0].review_id;
         // console.log('characteristics data', reviewData.characteristics)
-        var charObject = JSON.parse(reviewData.characteristics);
+        var charObject = reviewData.characteristics;
 
         var all = [];
 
@@ -89,7 +90,7 @@ module.exports = {
         })
       })
       .then(response => {
-        var photosArray = JSON.parse(reviewData.photos);
+        var photosArray = reviewData.photos;
         // console.log('photos array', photosArray)
         if(photosArray.length > 0) {
           photosArray.forEach(photo => {
@@ -105,7 +106,6 @@ module.exports = {
             })
           })
         } else {
-          console.log('RESPONSE', response);
           return;
         }
       })
